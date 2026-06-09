@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traducteur multi-moteurs</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- EN-TÊTE -->
+    <header class="app-header">
+      <div class="logo-dot"></div>
+      <h1>Traducteur <span>multi-moteurs</span></h1>
+    </header>
+
+    <!-- WORKSPACE : input | résultats -->
+    <div class="workspace">
+
+      <!-- PANNEAU INPUT -->
+      <div class="panel">
+        <div class="lang-row">
+          <select id="source" aria-label="Langue source">
+            <option value="auto">Détection auto</option>
+            <option value="fr">Français</option>
+            <option value="en">Anglais</option>
+            <option value="es">Espagnol</option>
+            <option value="de">Allemand</option>
+            <option value="it">Italien</option>
+            <option value="pt">Portugais</option>
+            <option value="nl">Néerlandais</option>
+            <option value="ar">Arabe</option>
+            <option value="zh">Chinois</option>
+            <option value="ja">Japonais</option>
+            <option value="ru">Russe</option>
+          </select>
+          <span class="arrow">→</span>
+          <select id="target" aria-label="Langue cible">
+            <option value="en">Anglais</option>
+            <option value="fr">Français</option>
+            <option value="es">Espagnol</option>
+            <option value="de">Allemand</option>
+            <option value="it">Italien</option>
+            <option value="pt">Portugais</option>
+            <option value="nl">Néerlandais</option>
+            <option value="ar">Arabe</option>
+            <option value="zh">Chinois</option>
+            <option value="ja">Japonais</option>
+            <option value="ru">Russe</option>
+          </select>
+        </div>
+
+        <div class="textarea-wrap">
+          <textarea
+            id="input"
+            placeholder="Entrez votre texte… (Ctrl+Entrée pour traduire)"
+            spellcheck="false"
+            maxlength="5000"
+          ></textarea>
+          <span class="char-count" id="char-count">0 caractère</span>
+        </div>
+
+        <button class="btn-translate" id="btn-translate">
+          <span class="btn-text">Traduire</span>
+          <span class="btn-spinner"></span>
+        </button>
+      </div>
+
+      <!-- PANNEAU RÉSULTATS -->
+      <div class="results-panel">
+        <span class="results-label">Résultats</span>
+        <div class="results-grid" id="results-grid"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
