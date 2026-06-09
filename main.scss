@@ -74,7 +74,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 
-  // Grille de fond subtile
+  // Subtle background grid
   background-image: radial-gradient(
     circle at 20% 20%,
     rgba(#00E5CC, 0.03) 0%,
@@ -129,7 +129,7 @@ body {
 }
 
 // ============================================================
-// PANNEAU INPUT
+// INPUT PANEL
 // ============================================================
 .panel {
   background:    $bg-surface;
@@ -275,7 +275,7 @@ body {
 }
 
 // ============================================================
-// PANNEAU RÉSULTATS
+// RESULTS PANEL
 // ============================================================
 .results-panel {
   display:        flex;
@@ -297,7 +297,7 @@ body {
   gap:            0.875rem;
 }
 
-// Card résultat
+// Result card
 .result-card {
   position:      relative;
   overflow:      hidden;
@@ -306,7 +306,7 @@ body {
   border-radius: $radius-md;
   padding:       1.1rem 1.25rem;
 
-  // Animation d'entrée en cascade (délais gérés en JS via --delay)
+  // Staggered entrance animation (delays set in JS via --delay)
   opacity:   0;
   transform: translateY(16px);
 
@@ -315,7 +315,7 @@ body {
     animation-delay: var(--delay, 0s);
   }
 
-  // Scan lumineux au survol
+  // Light scan sweep on hover
   &:hover {
     border-color: $border-accent;
 
@@ -380,7 +380,7 @@ body {
     line-height: 1.7;
   }
 
-  // État erreur
+  // Error state
   &.is-error {
     border-color: rgba($error, 0.3);
     .engine-name { color: $error; }
@@ -413,7 +413,7 @@ body {
   .sk-l2   { height: 14px; width: 70%; }
 }
 
-// État vide
+// Empty state
 .empty-state {
   display:         flex;
   flex-direction:  column;
@@ -434,7 +434,7 @@ body {
 }
 
 // ============================================================
-// FOCUS VISIBLE (accessibilité)
+// FOCUS VISIBLE (accessibility)
 // ============================================================
 :focus-visible {
   outline:        2px solid $accent;
