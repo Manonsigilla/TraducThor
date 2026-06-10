@@ -7,9 +7,67 @@ const targetEl  = document.getElementById('target');
 const btnEl     = document.getElementById('btn-translate');
 const gridEl    = document.getElementById('results-grid');
 const countEl   = document.getElementById('char-count');
+const scoreEl   = document.getElementById('thor-score');
+const boltsEl   = document.getElementById('bolt-count');
+const quipEl    = document.getElementById('thor-quip');
 
 // Engine names, in the order we render their result cards.
 const ENGINES   = ['Google', 'MyMemory', 'Linguee', 'Pons'];
+
+// ============================================================
+// THOR LIGHTNING SCORE ⚡
+// One translation = bolts proportional to the text length
+// (1 bolt per 25 characters, minimum 1). Total persists in
+// localStorage so the storm survives page reloads.
+// ============================================================
+const BOLTS_KEY      = 'thorBolts';
+const CHARS_PER_BOLT = 25;
+
+// Humorous status phrases, by total-score tier.
+const THOR_QUIPS = [
+  [0,    "No lightning yet. Even Thor started somewhere."],
+  [1,    "A faint spark… Loki remains unimpressed."],
+  [10,   "Mjölnir twitches. It senses potential."],
+  [50,   "Thunder rumbles over Asgard. Keep translating!"],
+  [100,  "Almost worthy. The hammer wobbled, we all saw it."],
+  [250,  "Heimdall can see your lightning from the Bifröst."],
+  [500,  "Odin nods approvingly. That basically never happens."],
+  [1000, "GOD OF TRANSLATION. Asgard bows before your keyboard."]
+];
+
+let totalBolts = parseInt(localStorage.getItem(BOLTS_KEY), 10) || 0;
+
+function quipFor(score) {
+  let quip = THOR_QUIPS[0][1];
+  for (const [threshold, text] of THOR_QUIPS) {
+    if (score >= threshold) quip = text;
+  }
+  return quip;
+}
+
+function renderScore() {
+  boltsEl.textContent = totalBolts.toLocaleString();
+  quipEl.textContent  = quipFor(totalBolts);
+}
+
+function awardBolts(charCount) {
+  const gained = Math.max(1, Math.ceil(charCount / CHARS_PER_BOLT));
+  totalBolts  += gained;
+  localStorage.setItem(BOLTS_KEY, totalBolts);
+  renderScore();
+
+  // "+N ⚡" floating popup next to the counter.
+  const pop = document.createElement('span');
+  pop.className   = 'bolt-pop';
+  pop.textContent = `+${gained} ⚡`;
+  scoreEl.appendChild(pop);
+  pop.addEventListener('animationend', () => pop.remove());
+
+  // Flash the badge.
+  scoreEl.classList.remove('zap');
+  void scoreEl.offsetWidth; // restart the animation
+  scoreEl.classList.add('zap');
+}
 
 // ============================================================
 // CHARACTER COUNTER
@@ -138,6 +196,10 @@ async function doTranslate() {
     const data = await res.json();
     renderResults(data);
 
+    // Award lightning only if at least one engine actually answered.
+    const anySuccess = Object.values(data).some(t => !t.startsWith('Error'));
+    if (anySuccess) awardBolts(text.length);
+
   } catch (err) {
     // Network/server failure (Flask down, etc.) — show a single error card.
     gridEl.innerHTML = `
@@ -180,3 +242,4 @@ function escapeAttr(str) {
 // INIT
 // ============================================================
 showEmpty();
+renderScore();
