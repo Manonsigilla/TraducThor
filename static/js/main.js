@@ -103,20 +103,38 @@ function showSkeletons() {
 function renderResults(data) {
   gridEl.innerHTML = '';
 
+  // Filter out errors and only display successful translations
+  const successfulResults = Object.entries(data).filter(([engine, text]) => !text.startsWith('Error'));
+  
+  // Log errors to console for debugging
+  Object.entries(data).forEach(([engine, text]) => {
+    if (text.startsWith('Error')) {
+      console.warn(`[${engine}] ${text}`);
+    }
+  });
+
+  // If no engines succeeded, show a user-friendly message
+  if (successfulResults.length === 0) {
+    gridEl.innerHTML = `
+      <div class="empty-state">
+        <span class="empty-icon">⚠️</span>
+        <span>Translation services unavailable. Try again later.</span>
+      </div>`;
+    return;
+  }
+
   // Wait one frame so the DOM is ready before we animate.
   requestAnimationFrame(() => {
-    Object.entries(data).forEach(([engine, text], i) => {
-      // The server prefixes failed engines with "Error:" (see app.py).
-      const isError = text.startsWith('Error');
-      const card    = document.createElement('div');
+    successfulResults.forEach(([engine, text], i) => {
+      const card = document.createElement('div');
 
-      card.className = `result-card${isError ? ' is-error' : ''}`;
+      card.className = 'result-card';
       card.style.setProperty('--delay', `${i * 0.09}s`);
       card.innerHTML = `
         <div class="scan"></div>
         <div class="card-header">
           <span class="engine-name">${engine}</span>
-          ${!isError ? `<button class="copy-btn" data-text="${escapeAttr(text)}">Copy</button>` : ''}
+          <button class="copy-btn" data-text="${escapeAttr(text)}">Copy</button>
         </div>
         <p class="card-text">${escapeHtml(text)}</p>`;
 
@@ -210,6 +228,31 @@ async function doTranslate() {
   } finally {
     btnEl.classList.remove('loading');
   }
+}
+
+// ============================================================
+// THOR RESET BUTTON — clears translations & shows animation
+// ============================================================
+const thorResetBtn = document.getElementById('thor-reset');
+
+if (thorResetBtn) {
+  thorResetBtn.addEventListener('click', () => {
+    // Clear input
+    inputEl.value = '';
+    countEl.textContent = '0 characters';
+    
+    // Show giant Thor smash animation (small screen shake effect)
+    document.body.style.animation = 'thorScreenShake 0.5s ease-out';
+    setTimeout(() => {
+      document.body.style.animation = '';
+    }, 500);
+    
+    // Clear results and show empty state
+    showEmpty();
+    
+    // Focus back on input
+    inputEl.focus();
+  });
 }
 
 // ============================================================
